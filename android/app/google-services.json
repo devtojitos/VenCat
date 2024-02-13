@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1049535232265",
+    "firebase_url": "https://vencat-7949f-default-rtdb.firebaseio.com",
+    "project_id": "vencat-7949f",
+    "storage_bucket": "vencat-7949f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1049535232265:android:6cbaa668cd2a16144bbbd8",
+        "android_client_info": {
+          "package_name": "vencat.app.com.vencat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMuCbR5Ynynshptj97MaLNu43Al90gKe4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
