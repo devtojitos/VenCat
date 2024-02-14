@@ -586,7 +586,6 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orange.shade300,
-        title: Center(child: Text("")),
       ),
       body: Stack(
         children: [
@@ -618,80 +617,89 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(3.0),
-                      child: Container(
-                        child: Card(
-                          elevation: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ExpansionTileItem(
-                              isHasTrailing: false,
-                              title: Container(
-                                child: Column(
+                      child: Card(
+                        elevation: 3,
+                        child: ExpansionTileItem(
+                          isHasTopBorder: false,
+                          isHasBottomBorder: false,
+                          tilePadding: EdgeInsets.all(2),
+                          isHasTrailing: false,
+                          title: Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       children: [
-                                        Text("Search :"),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Container(
-                                              height: 15,
-                                              child: TextField(),
-                                            ),
+                                        Icon(
+                                          Icons.filter_alt,
+                                          size: 18,
+                                        ),
+                                        Container(
+                                          height: 15,
+                                          child: Text(
+                                            "Filter Projects",
+                                            style: TextStyle(fontSize: 12),
                                           ),
                                         ),
-                                        Icon(Icons.search)
                                       ],
                                     ),
-                                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Icon(
-                                          Icons.location_city,
-                                        ),
-                                        Container(
-                                          child: DropdownButton(
-                                            value: selectedLocationCity,
-                                            items: locationCities?.map((city) {
-                                              return DropdownMenuItem<String>(
-                                                value: city,
-                                                child: Text(city),
-                                              );
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                selectedLocationCity =
-                                                    value.toString();
-                                                // Set corresponding location areas based on the selected city
-                                                locationAreas =
-                                                    _getLocationAreas(
-                                                        selectedLocationCity);
-                                                selectedLocationArea =
-                                                    locationAreas?[0];
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                        FaIcon(FontAwesomeIcons.peopleGroup),
-                                        Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.1,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.1,
-                                            child: TextField())
-                                      ],
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    FaIcon(
+                                      FontAwesomeIcons.city,
+                                      size: 18,
+                                    ),
+                                    Container(
+                                      child: DropdownButton(
+                                        isDense: true,
+                                        padding: EdgeInsets.all(2),
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.black),
+                                        value: selectedLocationCity,
+                                        items: locationCities?.map((city) {
+                                          return DropdownMenuItem<String>(
+                                            value: city,
+                                            child: Text(city),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedLocationCity =
+                                                value.toString();
+                                            // Set corresponding location areas based on the selected city
+                                            locationAreas = _getLocationAreas(
+                                                selectedLocationCity);
+                                            selectedLocationArea =
+                                                locationAreas?[0];
+                                          });
+                                        },
+                                      ),
                                     ),
                                     Row(
                                       children: [
                                         Icon(
                                           Icons.location_pin,
+                                          size: 18,
                                         ),
                                         Container(
                                           child: DropdownButton(
+                                            isDense: true,
+                                            padding: EdgeInsets.all(2),
+                                            borderRadius:
+                                                BorderRadius.circular(9),
+                                            iconSize: 18,
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.black),
                                             value: selectedLocationArea,
                                             items: locationAreas?.map((area) {
                                               return DropdownMenuItem<String>(
@@ -709,21 +717,37 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                         ),
                                       ],
                                     ),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.people,
+                                      ),
+                                      onPressed: () {},
+                                      tooltip: "Partners Number",
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.blue, width: 2),
+                                      ),
+                                      height: 30,
+                                      width: 50,
+                                      child: TextField(),
+                                    ),
                                   ],
                                 ),
-                              ),
-                              subtitle: Icon(
-                                Icons.keyboard_arrow_down_sharp,
-                                size: 20,
-                              ),
-                              children: [
                                 Row(
                                   children: [
-                                    IconButton(
-                                      onPressed: null,
-                                      icon: Icon(Icons.business),
+                                    Icon(
+                                      Icons.business,
+                                      size: 18,
                                     ),
                                     DropdownButton(
+                                      isDense: true,
+                                      padding: EdgeInsets.all(2),
+                                      borderRadius: BorderRadius.circular(9),
+                                      iconSize: 18,
+                                      style: TextStyle(
+                                          fontSize: 12, color: Colors.black),
                                       dropdownColor: Colors.grey.shade200,
                                       value: selectedBusinessField,
                                       items: businessFields?.map((field) {
@@ -741,26 +765,47 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                         );
                                       },
                                     ),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.people,
-                                      ),
-                                      onPressed: () {},
-                                      tooltip: "Partners Number",
+                                    Icon(
+                                      Icons.business_center,
+                                      size: 18,
                                     ),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.blue, width: 2),
-                                        ),
-                                        height: 30,
-                                        width: 50,
-                                        child: TextField())
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: DropdownButton(
+                                        isDense: true,
+                                        padding: EdgeInsets.all(2),
+                                        borderRadius: BorderRadius.circular(9),
+                                        iconSize: 18,
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.black),
+                                        dropdownColor: Colors.grey.shade200,
+                                        value: selectedBusinessField,
+                                        items: businessFields?.map((field) {
+                                          return DropdownMenuItem<String>(
+                                            value: field,
+                                            child: Text(field),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          setState(
+                                            () {
+                                              selectedBusinessField =
+                                                  value.toString();
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
                                   ],
                                 )
                               ],
                             ),
                           ),
+                          subtitle: Icon(
+                            Icons.keyboard_arrow_down_sharp,
+                            size: 20,
+                          ),
+                          children: [Row()],
                         ),
                       ),
                     ),
@@ -805,9 +850,9 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                                   Wrap(
                                                     children: [
                                                       Text(
-                                                        ("${project.businessBasicInfoModel?.businessTitle}"),
-                                                          style: Get.textTheme.bodyLarge
-                                                      ),
+                                                          ("${project.businessBasicInfoModel?.businessTitle}"),
+                                                          style: Get.textTheme
+                                                              .bodyMedium),
                                                     ],
                                                   ),
                                                   Divider(
@@ -842,13 +887,16 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                                         children: [
                                                           Row(
                                                             children: [
-                                                              FaIcon(FontAwesomeIcons
-                                                                  .businessTime),
+                                                              FaIcon(
+                                                                FontAwesomeIcons
+                                                                    .city,
+                                                                size: 18,
+                                                              ),
                                                               Padding(
                                                                 padding:
                                                                     const EdgeInsets
                                                                         .all(
-                                                                        8.0),
+                                                                        3.0),
                                                                 child: Text(
                                                                   "${project.businessBasicInfoModel?.businessLocationCity}",
                                                                 ),
@@ -857,14 +905,30 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                                           ),
                                                           Row(
                                                             children: [
-                                                              Icon(Icons.money),
+                                                              Icon(
+                                                                Icons.money,
+                                                                size: 18,
+                                                              ),
                                                               Padding(
                                                                 padding:
                                                                     const EdgeInsets
                                                                         .all(
-                                                                        8.0),
+                                                                        3.0),
                                                                 child: Text(
                                                                     "${project.businessBasicInfoModel?.businessField}"),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Icon(Icons.people,size: 18,),
+                                                              Padding(
+                                                                padding:
+                                                                const EdgeInsets.all(
+                                                                    3.0),
+                                                                child: Text(
+                                                                  "8/${project.businessBasicInfoModel?.partnersNumber}",
+                                                                ),
                                                               ),
                                                             ],
                                                           ),
@@ -878,30 +942,55 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                                           Row(
                                                             children: [
                                                               Icon(
-                                                                  Icons.people),
+                                                                Icons
+                                                                    .location_pin,
+                                                                size: 18,
+                                                              ),
                                                               Padding(
                                                                 padding:
                                                                     const EdgeInsets
                                                                         .all(
-                                                                        8.0),
+                                                                        3.0),
                                                                 child: Text(
-                                                                  "${project.businessBasicInfoModel?.businessLocationArea}",style: Get.textTheme.bodyLarge
-                                                                ),
+                                                                    "${project.businessBasicInfoModel?.businessLocationArea}",
+                                                                    style: Get
+                                                                        .textTheme
+                                                                        .bodyLarge),
                                                               ),
                                                             ],
                                                           ),
                                                           Row(
                                                             children: [
                                                               FaIcon(
-                                                                  FontAwesomeIcons
-                                                                      .sitemap),
+                                                                FontAwesomeIcons
+                                                                    .sitemap,
+                                                                size: 18,
+                                                              ),
                                                               Padding(
                                                                 padding:
                                                                     const EdgeInsets
                                                                         .all(
-                                                                        8.0),
+                                                                        3.0),
                                                                 child: Text(
-                                                                    "${project.businessBasicInfoModel?.businessType}",style: Get.textTheme.bodyLarge),
+                                                                    "${project.businessBasicInfoModel?.businessType}",
+                                                                    style: Get
+                                                                        .textTheme
+                                                                        .bodyLarge),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Icon(Icons.money,size: 18,),
+                                                              Padding(
+                                                                padding:
+                                                                const EdgeInsets.all(
+                                                                    3.0),
+                                                                child: Text(
+                                                                  "${project.businessBasicInfoModel?.businessCapital}",
+                                                                  style: Get
+                                                                      .textTheme.bodyLarge,
+                                                                ),
                                                               ),
                                                             ],
                                                           ),
@@ -914,9 +1003,13 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                             ),
                                           ),
                                           Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
                                             children: [
                                               Container(
-                                                height: 80,
+                                                height: 60,
                                                 width: MediaQuery.of(context)
                                                         .size
                                                         .width *
@@ -935,6 +1028,13 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                                 ),
                                               ),
                                               TextButton(
+                                                style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                                                  padding: MaterialStateProperty
+                                                      .all<EdgeInsetsGeometry>(
+                                                    EdgeInsets.all(
+                                                       3.0), // Set padding
+                                                  ),
+                                                ),
                                                 onPressed: () {
                                                   widget
                                                       .selectedProjectStateController
@@ -943,7 +1043,11 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                                   Get.to(() =>
                                                       ProjectDisplayMainScreen());
                                                 },
-                                                child: Text("View Details"),
+                                                child: Text(
+                                                  "View Details",
+                                                  style:
+                                                      Get.textTheme.bodyLarge,
+                                                ),
                                               ),
                                             ],
                                           )
@@ -973,7 +1077,9 @@ class _ProjectListScreenState extends State<ProjectListScreen> {
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: Text(
-                                                      "${project.businessBasicInfoModel?.businessCapital}",style: Get.textTheme.bodyLarge,
+                                                      "${project.businessBasicInfoModel?.businessCapital}",
+                                                      style: Get
+                                                          .textTheme.bodyLarge,
                                                     ),
                                                   ),
                                                 ],

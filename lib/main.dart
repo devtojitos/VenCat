@@ -31,7 +31,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
-        textTheme: TextTheme(bodyLarge: GoogleFonts.baumans(textStyle: TextStyle(fontSize: 14)) )
+        textTheme: TextTheme(bodyMedium: GoogleFonts.baumans(
+          textStyle: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+        ),
+          bodyLarge: GoogleFonts.baumans(
+            textStyle: TextStyle(fontSize: 12),
+          ),
+        ),
       ),
       home: HomeScreen(),
     );
@@ -40,7 +46,8 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   final FirebaseApp app;
-  const MyHomePage({super.key, required this.title,required this.app});
+
+  const MyHomePage({super.key, required this.title, required this.app});
 
   final String title;
 

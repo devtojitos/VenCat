@@ -737,7 +737,8 @@ class _CreateProjectInitScreenState extends State<CreateProjectInitScreen> {
                             borderRadius: BorderRadius.circular(8)),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: DropdownButton(dropdownColor: Colors.grey.shade200,
+                          child: DropdownButton(
+                            dropdownColor: Colors.grey.shade200,
                             value: selectedBusinessType,
                             items: businessType.map((type) {
                               return DropdownMenuItem<String>(
