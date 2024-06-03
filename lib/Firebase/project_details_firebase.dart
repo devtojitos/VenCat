@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
+import 'package:vencat/DataModel/ProjectModel/BusinessModel/FinanceModel/project_business_finance_model.dart';
+import 'package:vencat/DataModel/ProjectModel/BusinessModel/SettingModel/project_business_settings_model.dart';
+import 'package:vencat/DataModel/ProjectModel/project_model.dart';
 
 import '../DataModel/ProjectModel/BusinessModel/MarketingModel/project_business_marketing_model.dart';
-import '../DataModel/ProjectModel/BusinessModel/project_business_basic_info_model.dart';
+import '../DataModel/ProjectModel/BusinessModel/BasicInfoModel/project_business_basic_info_model.dart';
 import '../DataModel/ProjectModel/BusinessModel/project_business_model.dart';
 
 class ProjectService {
@@ -33,7 +36,7 @@ class ProjectService {
     try {
       await FirebaseDatabase.instance
           .ref("Projects")
-          .child("Published")
+          .child("Drafts")
           .child(projectId)
           .set(projectBusinessModel.toJson());
       return true;
@@ -41,6 +44,62 @@ class ProjectService {
       print(e);
       return false;
     }
+  }
+    Future<bool> writeProjectToPublish(
+      ProjectBusinessModel projectBusinessModel,
+
+      projectId) async {
+    try {
+      await FirebaseDatabase.instance
+          .ref("Projects")
+          .child("Publishedtr")
+          .child(projectId)
+          .set(projectBusinessModel.toJson());
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+  Future<bool> writeProjectToSubmit(
+      ProjectBusinessModel projectBusinessModel,
+
+      projectId) async {
+    try {
+      await FirebaseDatabase.instance
+          .ref("Projects")
+          .child("Submitted")
+          .child(projectId)
+          .set(projectBusinessModel.toJson());
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<List<ProjectBusinessModel>> GetAllProjectSubmittedFromFirebase() async {
+    List<ProjectBusinessModel> list = [];
+    var source = await FirebaseDatabase.instance
+        .ref("Projects")
+        .child("Submitted")
+        .once();
+    var data = source.snapshot;
+    ProjectBusinessModel? projectBusinessModel;
+
+    data.children.forEach(
+          (element) {
+        projectBusinessModel = ProjectBusinessModel.fromJson(
+          jsonDecode(
+            jsonEncode(element.value),
+          ),
+        );
+        list.add(projectBusinessModel!);
+      },
+
+    );
+
+    return list;
   }
 
   Future<List<ProjectBusinessModel>> GetAllProjectFromFirebase() async {
@@ -59,7 +118,6 @@ class ProjectService {
             jsonEncode(element.value),
           ),
         );
-        projectBusinessModel!.projectId = element.key!;
         list.add(projectBusinessModel!);
       },
 
@@ -93,10 +151,40 @@ class ProjectService {
     try {
       await FirebaseDatabase.instance
           .ref("Projects")
-          .child("Drafts")
+          .child("Published")
           .child(projectId)
           .child("businessMarketingModel")
           .update(businessMarketingModel.toJson());
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+  Future<bool> writeSettingsModelToProject(
+      BusinessSettingsModel businessSettingsModel, projectId) async {
+    try {
+      await FirebaseDatabase.instance
+          .ref("Projects")
+          .child("Published")
+          .child(projectId)
+          .child("businessSettingsModel")
+          .update(businessSettingsModel.toJson());
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+  Future<bool> writeFinanceModelToProject(
+      BusinessFinanceModel businessFinanceModel, projectId) async {
+    try {
+      await FirebaseDatabase.instance
+          .ref("Projects")
+          .child("Published")
+          .child(projectId)
+          .child("businessFinanceModel")
+          .update(businessFinanceModel.toJson());
       return true;
     } catch (e) {
       print(e);
@@ -137,7 +225,7 @@ class ProjectService {
     try {
       var source = await FirebaseDatabase.instance
           .ref("Projects")
-          .child("Drafts")
+          .child("Published")
           .orderByChild("userId")
           .equalTo(userId)
           .once();
@@ -157,7 +245,6 @@ class ProjectService {
             jsonEncode(element.value),
           ),
         );
-        projectBusinessModel!.projectId = element.key!;
       }
 
       return projectBusinessModel;
@@ -185,7 +272,6 @@ class ProjectService {
             jsonEncode(data.value),
           ),
         );
-        projectBusinessModel!.projectId = element.key!;
       });
 
       return true;
@@ -194,4 +280,20 @@ class ProjectService {
       return false;
     }
   }
+
+  Future<bool> writeProjectModel(
+      ProjectModel projectModel,String projectId) async {
+    try {
+      await FirebaseDatabase.instance
+          .ref("Projects")
+          .child("Published")
+          .child(projectId)
+          .set(projectModel.toJson());
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
 }

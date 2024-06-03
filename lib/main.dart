@@ -1,33 +1,55 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'Screens/Project_Create_Screens/create_project_basic_info_screen.dart';
-import 'Screens/Project_Create_Screens/create_project_finance_screen.dart';
-import 'Screens/Project_Create_Screens/create_project_marketing_screen.dart';
-import 'Screens/Project_Create_Screens/create_project_overview_screen.dart';
-import 'Screens/Project_View_Screens/project_display_chat_room_screen.dart';
-import 'Screens/Project_View_Screens/project_display_finance_screen.dart';
-import 'Screens/Project_View_Screens/project_display_main_screen.dart';
-import 'Screens/Project_View_Screens/project_display_marketing_screen.dart';
+import 'Firebase/messaging_firebase.dart';
+import 'Screens/User_Screens/login_screen.dart';
 import 'Screens/home_screen.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  await FirebaseMessaging.instance;
+
+  await EasyLocalization.ensureInitialized();
+
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [Locale('en', 'US'), Locale('es', 'ES')],
+      path: 'assets/translations',
+      saveLocale: true,
+      child: const MyApp(),
+    ),
+  );
 }
 
+Future<void> initNotifications() async {
+  await FirebaseMessaging.instance.requestPermission();
+  final fCMToken = await FirebaseMessaging.instance.getToken();
+  print("Token : ${fCMToken}");
+  FirebaseMessaging.onBackgroundMessage(handleBackgroundMessaging);
+}
+class LanguageController extends GetxController {
+  Rx<Locale> selectedLocale = Rx(const Locale('en', 'US'));
+
+  void changeLanguage(Locale newLocale) {
+    selectedLocale.value = newLocale;
+    EasyLocalization.of(Get.context!)!.setLocale(newLocale);
+  }
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final languageController = LanguageController();
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      locale: Get.deviceLocale,
-      title: 'Flutter Demo',
+      title: 'VenCat',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -39,29 +61,26 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: HomeScreen(),
+
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: languageController.selectedLocale.value,
+      fallbackLocale: Get.deviceLocale,
+      home: const AuthenticationWrapper(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  final FirebaseApp app;
 
-  const MyHomePage({super.key, required this.title, required this.app});
+class AuthenticationWrapper extends StatelessWidget {
+  const AuthenticationWrapper({super.key});
 
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("hello"),
-      ),
-    );
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return  HomeScreen();
+    }
+    return const LoginScreentut();
   }
 }

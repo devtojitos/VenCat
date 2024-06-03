@@ -1,7 +1,6 @@
 class BusinessMarketingModel {
-  String competitorAnalysisPdf = '',
-      SWOTAnalysisPdf = '',
-      pricingPdf = '',
+  String
+      detailsPdf = '',
       targetMarketAge = '',
       targetMarketGender = '',
       targetMarketHobbies = '',
@@ -9,11 +8,9 @@ class BusinessMarketingModel {
       marketingStrategy = '';
 
   BusinessMarketingModel({
-    required this.competitorAnalysisPdf,
-    required this.SWOTAnalysisPdf,
     required this.salesChannel,
     required this.marketingStrategy,
-    required this.pricingPdf,
+    required this.detailsPdf,
     required this.targetMarketAge,
     required this.targetMarketGender,
     required this.targetMarketHobbies,
@@ -21,11 +18,9 @@ class BusinessMarketingModel {
 
   factory BusinessMarketingModel.fromJson(Map<String, dynamic> json) {
     return BusinessMarketingModel(
-      competitorAnalysisPdf: json["competitorAnalysisPdf"],
-      SWOTAnalysisPdf: json["SWOTAnalysisPdf"],
       salesChannel: json["salesChannel"],
       marketingStrategy: json["marketingStrategy"],
-      pricingPdf: json["pricingPdf"],
+      detailsPdf: json["detailsPdf"],
       targetMarketAge: json["targetMarketAge"],
       targetMarketGender: json["targetMarketGender"],
       targetMarketHobbies: json["targetMarketHobbies"],
@@ -34,11 +29,9 @@ class BusinessMarketingModel {
 
   Map<String, dynamic> toJson() {
     return {
-      "competitorAnalysisPdf": competitorAnalysisPdf,
-      "SWOTAnalysisPdf": SWOTAnalysisPdf,
       "salesChannel": salesChannel,
       "marketingStrategy": marketingStrategy,
-      "pricingPdf": pricingPdf,
+      "detailsPdf": detailsPdf,
       "targetMarketAge": targetMarketAge,
       "targetMarketGender": targetMarketGender,
       "targetMarketHobbies": targetMarketHobbies,

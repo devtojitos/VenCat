@@ -15,3 +15,7 @@ String convertTypeToString(int projectTypeInt){
   }
   return projectTypeString;
 }
+
+class Utilities {
+
+}

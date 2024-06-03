@@ -1,4 +1,4 @@
-import 'FieldModel/project_business_field_options_model.dart';
+import '../FieldModel/project_business_field_options_model.dart';
 
 class BusinessBasicInfoModel {
   final String businessTitle,

@@ -1,163 +1,221 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:vencat/Screens/User_Screens/phone_verification_screen.dart';
+import 'package:vencat/StateController/user_state_controller.dart';
 
 import '../../DataModel/UserModel/user_model.dart';
 import '../../Firebase/user_firebase.dart';
 import '../../ViewModel/user_vm/user_sign_up_vm_imp.dart';
 
-class SignUpForm extends StatelessWidget {
-  final userDetailsViewModel = UserCreateAccountViewModelImp();
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
+class SignUpForm extends StatefulWidget {
   SignUpForm({super.key});
 
   @override
+  State<SignUpForm> createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
+
+  DateTime date = DateTime.now();
+
+  final userDetailsViewModel = UserCreateAccountViewModelImp();
+  final UserStateController userStateController =  Get.put(UserStateController());
+  final TextEditingController firstNameController = TextEditingController();
+
+  final TextEditingController lastNameController = TextEditingController();
+
+  final TextEditingController phoneController = TextEditingController();
+
+  final TextEditingController emailController = TextEditingController();
+
+  final TextEditingController passwordController = TextEditingController();
+  final UserService userService = UserService();
+  final _formKey =
+      GlobalKey<FormState>(); // Step 2: Create GlobalKey<FormState>
+
+  String? temp;
+  String? n;
+  PhoneNumber number = PhoneNumber(isoCode: 'US');
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign Up '),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Stack(
             children: [
-              Image.asset(height: 150, "assets/Logo.jpg"),
-              const SizedBox(
-                height: 20,
-              ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: firstNameController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(
+                        height: 20,
                       ),
-                      labelText: 'First Name'),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: lastNameController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      const SizedBox(
+                        height: 20,
                       ),
-                      labelText: 'Last Name'),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: phoneNumberController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      labelText: 'Phone Number'),
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      labelText: 'Email'),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      labelText: 'Password'),
-                  obscureText: true,
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  try {
-                    UserCredential userCredential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                      email: emailController.text,
-                      password: passwordController.text,
-                    );
-
-                    if (userCredential.user != null) {
-                      // Create UserModel instance
-                      UserModel userModel = UserModel(
-                        userId: userCredential.user!.uid,
-                        userFirstName: firstNameController.text,
-                        userLastName: lastNameController.text,
-                        phoneNumber: int.parse(phoneNumberController.text),
-                        email: emailController.text,
-
-                        dateOfBirth: 0,
-                        registrationDate: DateTime.now().millisecondsSinceEpoch,
-                      );
-
-                      // Add user to Firebase
-                      UserService().addUser(userModel);
-
-                    } else {
-                      print('User creation failed');
-                    }
-                  } catch (error) {
-                    print('Error during sign up: $error');
-                    if (error is FirebaseAuthException &&
-                        error.code == 'email-already-in-use') {
-                      Get.dialog(
-                        AlertDialog(
-                          title: Text('Error'),
-                          content: Text('Email is already in use.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
                                 Get.back();
                               },
-                              child: Text('OK'),
+                              child: FaIcon(
+                                FontAwesomeIcons.circleArrowLeft,
+                                size: 40,
+                                color: Color(0xFFFF6222),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 6,
+                            ),
+                            Text(
+                              "Register",
+                              style: TextStyle(
+                                  fontSize: 50,
+                                  color: Color(0xFFFF6222),
+                                  fontWeight: FontWeight.w900),
                             ),
                           ],
                         ),
-                      );
-                    } else if (error is FirebaseAuthException &&
-                        error.code == 'weak-password') {
-                      Get.dialog(
-                        AlertDialog(
-                          title: Text('Error'),
-                          content: Text(
-                              'Weak password. Must be more than 6 characters.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Get.back();
-                              },
-                              child: Text('OK'),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: firstNameController,
+                          decoration: InputDecoration(
+                            labelStyle: TextStyle(
+                                fontSize: 18,
+                                color: Color(0xFFFF6222),
+                                fontWeight: FontWeight.w900),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          ],
+                            labelText: 'Display Name',
+                          ),
                         ),
-                      );
-                    }
-                  }
-                },
-                child: const Text('Sign Up'),
+                      ),
+                      Row(
+                        children: [
+                          Text("Date of Birth"),
+                          TextButton(
+                            onPressed: () {
+                              showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1980),
+                                  lastDate: DateTime(2025)).then((value) {
+                                    setState(() {
+                                      date = value!;
+                                    });
+                              });
+                            },
+                            child: Text("select date of birth"),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          child: InternationalPhoneNumberInput(
+                            hintText: "Phone Number",
+                            textStyle: TextStyle(fontSize: 23),
+                            onInputChanged: (PhoneNumber number) {
+                              temp = number.dialCode;
+                              print(number.phoneNumber);
+                              n = number.phoneNumber;
+                            },
+                            onInputValidated: (bool value) {},
+                            selectorConfig: const SelectorConfig(
+                              selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                            ),
+                            ignoreBlank: false,
+                            autoValidateMode: AutovalidateMode.disabled,
+                            selectorTextStyle: TextStyle(color: Colors.black),
+                            textAlign: TextAlign.start,
+                            initialValue: number,
+                            textFieldController: phoneController,
+                            formatInput: false,
+                            keyboardType: TextInputType.numberWithOptions(
+                                signed: true, decimal: true),
+                            onSaved: (PhoneNumber number) {
+                              print('On Saved: $number');
+                            },
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Color(0xFF2B3454)),
+                        ),
+                        onPressed: () async {
+                          // Step 3: Validate form when button is pressed
+                          if (_formKey.currentState!.validate()) {
+                            // Form is validated, proceed with your logic
+                            bool phoneExist = await userService
+                                .checkIfPhoneExists(phoneController.text);
+
+                            if (phoneExist) {
+                              Get.dialog(
+                                AlertDialog(
+                                  title: const Text('Error'),
+                                  content:
+                                      const Text('Phone is already in use.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Get.back();
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              UserModel userModel = UserModel(
+                                  phoneNumber: phoneController.text,
+                                  userId: '',
+                                  userDisplayName: firstNameController.text,
+                                  dateOfBirth: date.millisecondsSinceEpoch,
+                                  registrationDate: DateTime.now().millisecondsSinceEpoch);
+
+                              userStateController.userInitState.value =
+                                  userModel;
+
+                              Get.to(() => PinCodeVerificationScreen(
+                                  phoneNumber: n,
+                                  phonenumbertext: phoneController.text));
+                            }
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: const Text(
+                            'Verify',
+                            style: TextStyle(
+                                fontSize: 30,
+                                color: Color(0xFFFF6222),
+                                fontWeight: FontWeight.w900),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

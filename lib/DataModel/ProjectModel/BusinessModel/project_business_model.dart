@@ -1,78 +1,66 @@
+import '../SettingsModel/project_business_settings_model.dart';
 import 'FinanceModel/project_business_finance_model.dart';
 import 'MarketingModel/project_business_marketing_model.dart';
-import 'OperationModel/project_business_operation_model.dart';
-import 'project_business_basic_info_model.dart';
+import 'ServiceModel/project_business_service_model.dart';
+import 'SettingModel/project_business_settings_model.dart';
+import 'BasicInfoModel/project_business_basic_info_model.dart';
 
 class ProjectBusinessModel {
-  late String projectId, userId;
-  final int createdOn;
   final BusinessBasicInfoModel? businessBasicInfoModel;
-  final BusinessFinanceModel? businessFinanceModel;
-  final BusinessMarketingModel? businessMarketingModel;
-  final BusinessOperationModel? businessOperationModel;
+  late BusinessFinanceModel? businessFinanceModel;
+  late BusinessMarketingModel? businessMarketingModel;
+  late BusinessSettingsModel? businessSettingsModel;
+  late List<String> projectMembersJoined=[];
+  late List<String> projectMembersRequests=[];
 
   ProjectBusinessModel({
-    required this.projectId,
-    required this.userId,
-    required this.createdOn,
     this.businessBasicInfoModel,
     this.businessFinanceModel,
     this.businessMarketingModel,
-    this.businessOperationModel,
+    this.businessSettingsModel,
   });
 
   factory ProjectBusinessModel.fromJson(Map<String, dynamic> json) {
     return ProjectBusinessModel(
-      projectId: json["projectId"],
-      userId: json["userId"],
-      createdOn: json["createdOn"],
-      businessBasicInfoModel: BusinessBasicInfoModel.fromJson(json["businessBasicInfoModel"]),
+      businessBasicInfoModel:
+          BusinessBasicInfoModel.fromJson(json["businessBasicInfoModel"]),
       businessFinanceModel: json["businessFinanceModel"] != null
           ? BusinessFinanceModel.fromJson(json["businessFinanceModel"])
           : BusinessFinanceModel(
-          detailedFinancialProjectionsPdf: '',
-          breakEvenAnalysisPdf: '',
-          initialInvestment: 1,
-          operatingCost: 1,
-          furnishCost: 1,
-          equipmentCost: 1,
-          operatingMaterialCost: 1,
-          businessModel: '1',
-          revenueStream: '',
-          operatingCostModel: ''
-      ),
+              detailedFinancialProjectionsPdf: '',
+              initialInvestment: 0,
+              operatingCost: 0,
+              furnishCost: 0,
+              equipmentCost: 0,
+              operatingMaterialCost: 0,
+            ),
       businessMarketingModel: json["businessMarketingModel"] != null
           ? BusinessMarketingModel.fromJson(json["businessMarketingModel"])
           : BusinessMarketingModel(
-          competitorAnalysisPdf: '',
-          SWOTAnalysisPdf: '',
-          salesChannel: '',
-          marketingStrategy: '',
-          pricingPdf: '',
-          targetMarketAge: '',
-          targetMarketGender: '',
-          targetMarketHobbies: ''
-      ),
-      businessOperationModel: json["businessOperationModel"] != null
-          ? BusinessOperationModel.fromJson(json["businessOperationModel"])
-          : BusinessOperationModel(
-          numberOfEmployees: 1,
-          operationPlanPdf: '',
-          jobs: []
-      ),
+              salesChannel: '',
+              marketingStrategy: '',
+              detailsPdf: '',
+              targetMarketAge: '',
+              targetMarketGender: '',
+              targetMarketHobbies: ''),
+      businessSettingsModel: json["businessSettingsModel"] != null
+          ? BusinessSettingsModel.fromJson(json["businessSettingsModel"])
+          : BusinessSettingsModel(
+              investorsType: false,
+              projectType: false,
+              checkmessaging: false,
+              checkShowCase: false,
+              checkSubscribersClose: false,
+              checkSubscribersOpen: false),
     );
   }
 
-
   Map<String, dynamic> toJson() {
     return {
-      "projectId": projectId,
-      "userId": userId,
-      "createdOn": createdOn,
       "businessBasicInfoModel": businessBasicInfoModel?.toJson(),
       "businessFinanceModel": businessFinanceModel?.toJson(),
       "businessMarketingModel": businessMarketingModel?.toJson(),
-      "businessOperationModel": businessOperationModel?.toJson(),
+      "businessSettingsModel": businessSettingsModel?.toJson(),
     };
   }
 }
