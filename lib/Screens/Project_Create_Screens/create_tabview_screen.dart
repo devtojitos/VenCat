@@ -36,7 +36,9 @@ class _CreateTabviewScreenState extends State<CreateTabviewScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Create a Project"),
+      ),
       body: Column(
         children: [
           Stack(

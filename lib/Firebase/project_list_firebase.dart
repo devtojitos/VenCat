@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:vencat/DataModel/ProjectModel/BusinessModel/project_business_model.dart';
 
+import '../DataModel/ProjectModel/project_model.dart';
+
 class UserProjectService {
 
 
-  Future<List<ProjectBusinessModel>> GetAllProjectByUserId(String userId) async {
-    List<ProjectBusinessModel> list = [];
+  Future<List<ProjectModel>> GetAllProjectByUserId(String userId) async {
+    List<ProjectModel> list = [];
     var source = await FirebaseDatabase.instance
         .ref("Projects")
         .child("Published")
@@ -15,16 +17,17 @@ class UserProjectService {
         .equalTo(userId)
         .once();
     var data = source.snapshot;
-    ProjectBusinessModel? projectBusinessModel;
+    ProjectModel? projectModel;
 
     data.children.forEach(
           (element) {
-        projectBusinessModel = ProjectBusinessModel.fromJson(
+        projectModel = ProjectModel.fromJson(
           jsonDecode(
             jsonEncode(element.value),
           ),
         );
-        list.add(projectBusinessModel!);
+        projectModel?.projectId=element.key!;
+        list.add(projectModel!);
       },
     );
 
@@ -48,6 +51,7 @@ class UserProjectService {
             jsonEncode(element.value),
           ),
         );
+
         list.add(projectBusinessModel!);
       },
     );

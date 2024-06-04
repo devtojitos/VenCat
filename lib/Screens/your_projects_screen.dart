@@ -5,18 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:vencat/Firebase/project_list_firebase.dart';
+import 'package:vencat/Screens/project_list_screen.dart';
 
 import '../DataModel/ProjectModel/BusinessModel/project_business_model.dart';
+import '../Widgets/common_widgets/custom_bottom_nav_bar_widget.dart';
+import '../Widgets/common_widgets/custome_column_widget.dart';
 import 'Project_Create_Screens/create_project_overview_screen.dart';
+import 'home_screen.dart';
 
 class YourProjectsScreen extends StatelessWidget {
-  const YourProjectsScreen({super.key});
+   YourProjectsScreen({super.key});
+ final UserProjectService _userProjectService = UserProjectService();
 
   @override
   Widget build(BuildContext context) {
     UserProjectService userProjectService = UserProjectService();
     return SafeArea(
         child: Scaffold(
+          bottomNavigationBar: CustomBottomNavBarWidget(),
       body: Stack(
         children: [
           Container(
@@ -32,26 +38,51 @@ class YourProjectsScreen extends StatelessWidget {
               ),
             ),
           ),
-          Column(
-            children: [
-              SizedBox(
-                height: 80,
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.3,
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Published Projects"),
-                      Center(
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.2,
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 80,
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomColumnWidget(),
+                  ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Joined Projects"),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.12,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Draft Projects"),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.14,
                           width: MediaQuery.of(context).size.width * 0.9,
                           child: FutureBuilder(
-                              future: userProjectService.GetAllPublishedProjectByUserId(
+                              future: userProjectService.GetAllDraftProjectByUserId(
                                   FirebaseAuth.instance.currentUser!.uid),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
@@ -62,8 +93,8 @@ class YourProjectsScreen extends StatelessWidget {
                                 } else if (snapshot.hasError) {
                                   return Text("Error: ${snapshot.error}");
                                 } else if (snapshot.hasData) {
-                                  var projects = snapshot.data
-                                      as List<ProjectBusinessModel>;
+                                  var projects =
+                                      snapshot.data as List<ProjectBusinessModel>;
                                   return Column(
                                     children: [
                                       Expanded(
@@ -72,7 +103,7 @@ class YourProjectsScreen extends StatelessWidget {
                                             itemCount: projects.length,
                                             itemBuilder: (context, index) {
                                               var project = projects[index];
-
+            
                                               return Card(
                                                 child: Container(
                                                   decoration: BoxDecoration(
@@ -97,103 +128,22 @@ class YourProjectsScreen extends StatelessWidget {
                                   return const Text("no Data found");
                                 }
                               }),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.2,
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Joined Projects"),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.12,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                      )
-                    ],
+                Card(
+                  color: Colors.blue.shade400,
+                  child: TextButton(
+                    onPressed: () {
+                      Get.to(() => CreateProjectOverviewScreen());
+                    },
+                    child: Text("Create Project"),
                   ),
                 ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.2,
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Draft Projects"),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.14,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: FutureBuilder(
-                            future: userProjectService.GetAllDraftProjectByUserId(
-                                FirebaseAuth.instance.currentUser!.uid),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              } else if (snapshot.hasError) {
-                                return Text("Error: ${snapshot.error}");
-                              } else if (snapshot.hasData) {
-                                var projects =
-                                    snapshot.data as List<ProjectBusinessModel>;
-                                return Column(
-                                  children: [
-                                    Expanded(
-                                      child: ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: projects.length,
-                                          itemBuilder: (context, index) {
-                                            var project = projects[index];
-
-                                            return Card(
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.black)),
-                                                width: 80,
-                                                height: 120,
-                                                child: Center(
-                                                  child: Container(
-                                                    child: Text(project
-                                                        .businessBasicInfoModel!
-                                                        .businessTitle),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          }),
-                                    ),
-                                  ],
-                                );
-                              } else {
-                                return const Text("no Data found");
-                              }
-                            }),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Card(
-                color: Colors.blue.shade400,
-                child: TextButton(
-                  onPressed: () {
-                    Get.to(() => CreateProjectOverviewScreen());
-                  },
-                  child: Text("Create Project"),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),

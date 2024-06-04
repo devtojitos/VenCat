@@ -1,33 +1,28 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:vencat/Firebase/project_list_firebase.dart';
 
 import '../../DataModel/ProjectModel/project_model.dart';
 
-class YourProjectListTile extends StatelessWidget {
-  YourProjectListTile({super.key, this.data});
 
-  final ProjectModel? data;
+class YourProjectsFutureList extends StatefulWidget {
+
+  YourProjectsFutureList({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        "${data!.projectBusinessModel?.businessBasicInfoModel!.businessTitle}",
-        style: const TextStyle(fontSize: 20),
-      ),
-    );
-  }
+  State<YourProjectsFutureList> createState() => _YourProjectsFutureListState();
 }
 
-class YourProjectsFutureList extends StatelessWidget {
-  YourProjectsFutureList({super.key, this.data});
+class _YourProjectsFutureListState extends State<YourProjectsFutureList> {
+  UserProjectService _userProjectService =UserProjectService();
 
-  final Future<List<ProjectModel>>? data;
+  String userId = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     throw FutureBuilder(
-        future: data,
+        future: _userProjectService.GetAllProjectByUserId(userId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -36,7 +31,7 @@ class YourProjectsFutureList extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Text("Error: ${snapshot.error}");
           } else if (snapshot.hasData) {
-            List projects = snapshot.data!.toList();
+            List projects = snapshot.data!;
             return ListView.builder(
                 itemCount: projects.length,
                 itemBuilder: (BuildContext context, int index) {

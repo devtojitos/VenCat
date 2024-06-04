@@ -1,14 +1,13 @@
 import 'package:vencat/DataModel/ProjectModel/BusinessModel/project_business_model.dart';
 import 'package:vencat/DataModel/ProjectModel/MembersModel/project_members_model.dart';
-
 import 'MembersModel/project_join_request_model.dart';
 
 class ProjectModel {
-  String projectId = "",
-      userId = "";
+  String projectId = "";
+  String userId = "";
   int dateCreated = 0;
   ProjectBusinessModel? projectBusinessModel;
-  List<ProjectMembersModel>? projectMembers ;
+  List<ProjectMembersModel>? projectMembers;
   List<ProjectJoinRequestModel>? projectJoinRequest;
 
   ProjectModel({
@@ -16,14 +15,17 @@ class ProjectModel {
     required this.projectId,
     required this.userId,
     required this.dateCreated,
-    required this.projectMembers, required this.projectJoinRequest,});
+    required this.projectMembers,
+    required this.projectJoinRequest,
+  });
 
-
-  ProjectModel.fromJson(Map<String, dynamic> json){
+  ProjectModel.fromJson(Map<String, dynamic> json) {
     projectId = json["projectId"];
     userId = json["userId"];
     dateCreated = json["dateCreated"];
-    projectBusinessModel = ProjectBusinessModel.fromJson(json);
+    projectBusinessModel = json['projectBusinessModel'] != null
+        ? ProjectBusinessModel.fromJson(json['projectBusinessModel'])
+        : null;
     if (json['projectMembers'] != null) {
       projectMembers = <ProjectMembersModel>[];
       json['projectMembers'].forEach((v) {
@@ -38,19 +40,20 @@ class ProjectModel {
     }
   }
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['projectId'] = projectId;
     data['userId'] = userId;
     data['dateCreated'] = dateCreated;
-    if (projectJoinRequest != null) {
-      data['projectJoinRequest'] = projectJoinRequest!.map((v) => v.toJson()).toList();
+    if (projectBusinessModel != null) {
+      data['projectBusinessModel'] = projectBusinessModel!.toJson();
     }
     if (projectMembers != null) {
       data['projectMembers'] = projectMembers!.map((v) => v.toJson()).toList();
     }
-
+    if (projectJoinRequest != null) {
+      data['projectJoinRequest'] = projectJoinRequest!.map((v) => v.toJson()).toList();
+    }
     return data;
-
   }
 }

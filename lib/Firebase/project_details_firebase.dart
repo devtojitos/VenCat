@@ -259,7 +259,7 @@ class ProjectService {
       var source = await FirebaseDatabase.instance
           .ref()
           .child("Projects")
-          .child("Drafts")
+          .child("Published")
           .orderByChild(userId)
           .equalTo(userId)
           .once();
@@ -295,5 +295,30 @@ class ProjectService {
       return false;
     }
   }
+  Future<List<ProjectModel>> GetAllProjectModel() async {
+    List<ProjectModel> list = [];
+    var source = await FirebaseDatabase.instance
+        .ref("Projects")
+        .child("Published")
+        .once();
+    var data = source.snapshot;
+    ProjectModel? projectModel;
+
+    data.children.forEach(
+          (element) {
+        projectModel = ProjectModel.fromJson(
+          jsonDecode(
+            jsonEncode(element.value),
+          ),
+        );
+        projectModel?.projectId=element.key!;
+        list.add(projectModel!);
+      },
+    );
+
+    return list;
+  }
+
+
 
 }

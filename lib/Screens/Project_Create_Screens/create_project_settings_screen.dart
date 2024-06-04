@@ -211,9 +211,6 @@ class _CreateProjectSettingsScreenState
                           .value.businessSettingsModel = businessSettingsModel;
 
                       ProjectBusinessModel stateProjectModel = _projectSelectedStateController.selectedBusinessModel.value;
-                      print(_projectSelectedStateController.selectedBusinessModel.value.businessSettingsModel!.partnersPartner.toString());
-                      print(_projectSelectedStateController.selectedBusinessModel.value.businessSettingsModel!.partnersInvest.toString());
-                      print(_projectSelectedStateController.selectedBusinessModel.value.businessMarketingModel!.salesChannel);
 
                       ProjectModel projectModel = ProjectModel(
                           projectBusinessModel: stateProjectModel,
@@ -224,6 +221,7 @@ class _CreateProjectSettingsScreenState
                           projectJoinRequest: []);
 
                      await projectService.writeProjectModel(projectModel,projectId);
+                     Get.off(()=>HomeScreen());
 
                     },
                     child: const Text("Save"),
